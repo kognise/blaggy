@@ -4,7 +4,8 @@
   "description": "Fast, simple, and speedy blagging for the interblag with NodeJS!",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no tests specified!\""
+    "start": "node main.js",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -28,5 +29,8 @@
   "homepage": "https://github.com/arch-lord/blaggy#readme",
   "dependencies": {
     "express": "^4.16.3"
+  },
+  "devDependencies": {
+    "supertest": "^3.1.0"
   }
 }
