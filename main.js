@@ -20,15 +20,16 @@ new Promise(function(resolve, reject) {
     generatedCSS = sass.renderSync({ file: "styles/main.css" }).css.toString("utf8");
     resolve();
   } catch(error) {
-    reject();
+    reject(error);
   }
 }).then(
   () => {
     generateCSSSpinner.succeed();
     setUpTemplates();
   },
-  () => {
+  (error) => {
     generateCSSSpinner.fail();
+    console.log(chalk.red(error));
     process.exit(1);
   }
 );
@@ -52,15 +53,16 @@ function setUpTemplates() {
       
       resolve();
     } catch(error) {
-      reject();
+      reject(error);
     }
   }).then(
     () => {
       setUpTemplatesSpinner.succeed();
       setUpTemplates();
     },
-    () => {
+    (error) => {
       setUpTemplatesSpinner.fail();
+      console.log(chalk.red(error));
       process.exit(1);
     }
   );

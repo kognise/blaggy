@@ -1,15 +1,20 @@
-var ora        = require("ora")        ;
-var prompts    = require("prompts")    ;
 var fileExists = require("file-exists");
+var prompts    = require("prompts")    ;
 var writeFile  = require("write")      ;
+var chalk      = require("chalk")      ;
+var ora        = require("ora")        ;
 
 var checkExistsSpinner = ora("Checking if config.js already exists");
 new Promise(function(resolve, reject) {
   checkExistsSpinner.start();
-  if (!fileExists.sync("config/config.js")) {
-    resolve(false);
-  } else {
-    resolve(true);
+  try {
+    if (!fileExists.sync("config/config.js")) {
+      resolve(false);
+    } else {
+      resolve(true);
+    }
+  } catch(error) {
+    reject(error);
   }
 }).then(
   (shouldExit) => {
@@ -20,8 +25,9 @@ new Promise(function(resolve, reject) {
     }
     configDoesNotExist();
   },
-  () => {
+  (error) => {
     checkExistsSpinner.fail();
+    console.log(chalk.red(error));
     process.exit(1);
   }
 );
@@ -87,12 +93,17 @@ async function configDoesNotExist() {
     });
   }).then(
     () => {
-      writeFileSpinner.succeed();
-      console.log("Blaggy is ready!");
-      console.log("Just do `npm start` to start it.");
+      try {
+        writeFileSpinner.succeed();
+        console.log("Blaggy is ready!");
+        console.log("Just do `npm start` to start it.");
+      } catch(error) {
+        reject(error);
+      }
     },
-    () => {
+    (error) => {
       writeFileSpinner.fail();
+      console.log(chalk.red(error));
       process.exit(1);
     }
   );
