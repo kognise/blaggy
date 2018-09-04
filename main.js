@@ -54,18 +54,21 @@ function startTheSite() {
   });
 }
 
-function defineRoutes(app) {
-  app.get("/", function (req, res) {
-    res.status(200).send(getHTML("ok"));
-  });
-}
-
 async function startServer(app) {
   var server = app.listen(3000, function () {
     var port = server.address().port;
     console.log(chalk.green("Listening at port %s."), port);
   });
   currentServer = server
+}
+
+function defineRoutes(app) {
+  app.get("/", function (req, res) {
+    res.status(200).send(getHTML("Ok."));
+  });
+  app.get("/test", function(req, res) {
+    res.status(200).send(getHTML(read.sync("htm/test.htm")));
+  })
 }
 
 setUpTemplates(generateCSS, startTheSite);
