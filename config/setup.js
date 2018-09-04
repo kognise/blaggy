@@ -1,21 +1,32 @@
 var ora = require("ora");
 var prompts = require("prompts");
+var fileExists = require("file-exists");
+var writeFile = require("write");
 
 var checkExistsSpinner = ora("Checking if config.js already exists");
 var checkExistsPromise = new Promise(function(resolve, reject) {
   checkExistsSpinner.start();
-  setTimeout(resolve, 1000);
+  if (!fileExists.sync("config/config.js")) {
+    resolve(false);
+  } else {
+    resolve(true);
+  }
 }).then(
-  () => {
+  (shouldExit) => {
     checkExistsSpinner.succeed();
+    if (shouldExit) {
+      console.log("Exiting because it does.");
+      process.exit();
+    }
     configDoesNotExist();
   },
   () => {
     checkExistsSpinner.fail();
+    process.exit(1);
   }
 );
 
-function configDoesNotExist() {
+async function configDoesNotExist() {
   var normalQuestions = [
     {
       type: "text",
@@ -49,29 +60,36 @@ function configDoesNotExist() {
   var normalResponse;
   var disqusResponse;
    
-  prompts(normalQuestions).then(
-    (output) => {
-      normalResponse = output;
-      disqusResponse = null;
-      prompts({
-        type: "confirm",
-        name: "yorn",
-        message: "Use Disqus"
-      }).then(
-        (output) => {
-          if (output.yorn) {
-            console.log("Make sure to set up your site at https://disqus.com before continuing!");
-            prompts(disqusQuestions).then(
-              (output) => {
-                disqusResponse = output;
-              },
-              () => {}
-            );
-          }
-        },
-        () => {}
-      );
+  normalResponse = await prompts(normalQuestions);
+  disqusResponse = null;
+  
+  var shouldAskDisqusQuestions = await prompts({
+    type: "confirm",
+    name: "yorn",
+    message: "Use Disqus"
+  });
+  if (shouldAskDisqusQuestions.yorn) {
+    console.log("Make sure to set up your site at https://disqus.com before continuing!");
+    disqusResponse = await prompts(disqusQuestions);
+  }
+  
+  var writeFileSpinner = ora("Writing config file");
+  var writeFilePromise = new Promise(function(resolve, reject) {
+    writeFileSpinner.start();
+    writeFile("config/config.js", "var normal = " + JSON.stringify(normalResponse) + "\nvar disqus = " + JSON.stringify(disqusResponse) + ";", (error) => {
+      if (error) {
+        reject();
+      } else {
+        resolve();
+      }
+    });
+  }).then(
+    () => {
+      writeFileSpinner.succeed();
     },
-    () => {}
+    () => {
+      writeFileSpinner.fail();
+      process.exit(1);
+    }
   );
 }

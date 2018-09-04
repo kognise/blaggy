@@ -32,7 +32,8 @@
     "express": "^4.16.3",
     "file-exists": "^5.0.1",
     "ora": "^3.0.0",
-    "prompts": "^1.0.0"
+    "prompts": "^1.0.0",
+    "write": "^1.0.3"
   },
   "devDependencies": {
     "supertest": "^3.1.0"
