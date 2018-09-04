@@ -1,10 +1,9 @@
-var format   = require("string-format");
-var sass     = require("node-sass")    ;
-var read     = require("read-file")    ;
-var chokidar = require("chokidar")     ;
-var express  = require("express")      ;
-var spin     = require("./spin")       ;
-var chalk    = require("chalk")        ;
+var sass     = require("node-sass");
+var read     = require("read-file");
+var chokidar = require("chokidar") ;
+var express  = require("express")  ;
+var spin     = require("./spin")   ;
+var chalk    = require("chalk")    ;
 
 try {
   var config = require("./config/config");
@@ -16,16 +15,15 @@ try {
 var skeletonWithStuff = "";
 function setUpTemplates(callback, argument) {
   spin("Setting up templates", function() {
-    format.extend(String.prototype, {});
-    
     var skeleton = read.sync("htm/skeleton.htm").toString("utf8");
     var head     = read.sync("htm/head.htm"    ).toString("utf8");
     var bar      = read.sync("htm/bar.htm"     ).toString("utf8");
     
-    var headWithName = head.format(config.normal.name, "{}");
-    var barWithName  = bar .format(config.normal.name);
-    
-    skeletonWithStuff = skeleton.format(headWithName, barWithName, "{}", "{}");
+    skeletonWithStuff = skeleton
+      .replace("{{ head }}", head)
+      .replace("{{ bar }}", bar)
+      .replace("{{ name }}", config.normal.name);
+      
     return argument;
   }, callback);
 }
@@ -40,8 +38,10 @@ function generateCSS(callback, argument) {
 
 var currentServer;
 
-function getHTML(contents) {
-  var toReturn = skeletonWithStuff.format(generatedCSS, contents);
+function getHTML(content) {
+  var toReturn = skeletonWithStuff
+    .replace("{{ content }}", content)
+    .replace("{{ styles }}", generatedCSS);
   return toReturn;
 }
 

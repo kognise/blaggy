@@ -38,7 +38,6 @@
     "prompts": "^1.0.0",
     "read-file": "^0.2.0",
     "rimraf": "^2.6.2",
-    "string-format": "^2.0.0",
     "synchronous-promise": "^2.0.5",
     "write": "^1.0.3"
   },
