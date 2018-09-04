@@ -1,36 +1,21 @@
 var fileExists = require("file-exists");
 var prompts    = require("prompts")    ;
+var spin       = require("../spin")    ;
 var writeFile  = require("write")      ;
-var chalk      = require("chalk")      ;
-var ora        = require("ora")        ;
 
-var checkExistsSpinner = ora("Checking if config.js already exists");
-new Promise(function(resolve, reject) {
-  checkExistsSpinner.start();
-  try {
-    if (!fileExists.sync("config/config.js")) {
-      resolve(false);
-    } else {
-      resolve(true);
-    }
-  } catch(error) {
-    reject(error);
+spin("Checking if config.js already exists", function() {
+  if (!fileExists.sync("config/config.js")) {
+    return false;
+  } else {
+    return true;
   }
-}).then(
-  (shouldExit) => {
-    checkExistsSpinner.succeed();
-    if (shouldExit) {
-      console.log("Exiting because it does.");
-      process.exit();
-    }
-    configDoesNotExist();
-  },
-  (error) => {
-    checkExistsSpinner.fail();
-    console.log(chalk.red(error));
-    process.exit(1);
+}, function(shouldExit) {
+  if (shouldExit) {
+    console.log("Exiting because it does.");
+    process.exit();
   }
-);
+  configDoesNotExist();
+});
 
 async function configDoesNotExist() {
   var normalQuestions = [
@@ -79,32 +64,14 @@ async function configDoesNotExist() {
     disqusResponse = await prompts(disqusQuestions);
   }
   
-  var writeFileSpinner = ora("Writing config file");
-  new Promise(function(resolve, reject) {
-    writeFileSpinner.start();
-    writeFile("config/config.js", "var normal = "
-    + JSON.stringify(normalResponse) + ";\nvar disqus = " + JSON.stringify(disqusResponse)
-    + ";\nmodule.exports = {\"normal\":normal,\"disqus\":disqus};", (error) => {
-      if (error) {
-        reject();
-      } else {
-        resolve();
-      }
-    });
-  }).then(
-    () => {
-      try {
-        writeFileSpinner.succeed();
-        console.log("Blaggy is ready!");
-        console.log("Just do `npm start` to start it.");
-      } catch(error) {
-        reject(error);
-      }
-    },
-    (error) => {
-      writeFileSpinner.fail();
-      console.log(chalk.red(error));
-      process.exit(1);
-    }
-  );
+  spin("Writing config file", function() {
+    writeFile.sync("config/config.js", "var normal = "
+    + JSON.stringify(normalResponse)
+    + ";\nvar disqus = "
+    + JSON.stringify(disqusResponse)
+    + ";\nmodule.exports = {\"normal\":normal,\"disqus\":disqus};");
+  }, function() {
+    console.log("Blaggy is ready!");
+    console.log("Just do `npm start` to start it.");
+  });
 }

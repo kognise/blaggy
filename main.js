@@ -2,8 +2,8 @@ var format  = require("string-format");
 var sass    = require("node-sass")    ;
 var read    = require("read-file")    ;
 var express = require("express")      ;
+var spin    = require("./spin")       ;
 var chalk   = require("chalk")        ;
-var ora     = require("ora")          ;
 
 try {
   var config = require("./config/config");
@@ -13,59 +13,24 @@ try {
 }
 
 var generatedCSS = "";
-var generateCSSSpinner = ora("Generating CSS");
-new Promise(function(resolve, reject) {
-  generateCSSSpinner.start();
-  try {
-    generatedCSS = sass.renderSync({ file: "styles/main.css" }).css.toString("utf8");
-    resolve();
-  } catch(error) {
-    reject(error);
-  }
-}).then(
-  () => {
-    generateCSSSpinner.succeed();
-    setUpTemplates();
-  },
-  (error) => {
-    generateCSSSpinner.fail();
-    console.log(chalk.red(error));
-    process.exit(1);
-  }
-);
+spin("Generating CSS", function() {
+  generatedCSS = sass.renderSync({ file: "styles/main.css" }).css.toString("utf8");
+}, setUpTemplates);
 
 var skeletonWithStuff = "";
 function setUpTemplates() {
-  var setUpTemplatesSpinner = ora("Setting up templates");
-  new Promise(function(resolve, reject) {
-    setUpTemplatesSpinner.start();
-    try {
-      format.extend(String.prototype, {});
-      
-      var skeleton = read.sync("htm/skeleton.htm");
-      var head     = read.sync("htm/head.htm"    );
-      var bar      = read.sync("htm/bar.htm"     );
-      
-      var headWithName = head.format(config.normal.name);
-      var barWithName  = head.format(config.normal.name);
-      
-      skeletonWithStuff = skeleton.format(headWithName, barWithName, "{}");
-      
-      resolve();
-    } catch(error) {
-      reject(error);
-    }
-  }).then(
-    () => {
-      setUpTemplatesSpinner.succeed();
-      setUpTemplates();
-    },
-    (error) => {
-      setUpTemplatesSpinner.fail();
-      console.log(chalk.red(error));
-      process.exit(1);
-    }
-  );
+  spin("Setting up templates", function() {
+    format.extend(String.prototype, {});
+    
+    var skeleton = read.sync("htm/skeleton.htm");
+    var head     = read.sync("htm/head.htm"    );
+    var bar      = read.sync("htm/bar.htm"     );
+    
+    var headWithName = head.format(config.normal.name);
+    var barWithName  = head.format(config.normal.name);
+    
+    skeletonWithStuff = skeleton.format(headWithName, barWithName, "{}");
+  }, startTheSite);
 }
 
 function getHTML(contents) {
