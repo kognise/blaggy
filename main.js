@@ -1,12 +1,16 @@
-var express = require("express");
-var sass = require("node-sass");
-var ora = require("ora");
+const config = require("config.js");
+
+var format  = require("string-format");
+var sass    = require("node-sass")    ;
+var read    = require("read-file")    ;
+var express = require("express")      ;
+var ora     = require("ora")          ;
 
 var serverExport;
 
 var generatedCSS = "";
 var generateCSSSpinner = ora("Generating CSS");
-var generateCSSPromise = new Promise(function(resolve, reject) {
+new Promise(function(resolve, reject) {
   generateCSSSpinner.start();
   try {
     generatedCSS = sass.renderSync({ file: "styles/main.css" }).css.toString("utf8");
@@ -17,13 +21,39 @@ var generateCSSPromise = new Promise(function(resolve, reject) {
 }).then(
   () => {
     generateCSSSpinner.succeed();
-    startTheSite();
+    setUpTemplates();
   },
   () => {
     generateCSSSpinner.fail();
     process.exit(1);
   }
 );
+
+var skeletonWithHead = "";
+function setUpTemplates() {
+  var setUpTemplatesSpinner = ora("Setting up templates");
+  new Promise(function(resolve, reject) {
+    setUpTemplatesSpinner.start();
+    try {
+      var skeleton = read.sync("htm/skeleton.htm");
+      var head     = read.sync("htm/skeleton.htm");
+      var headWithName
+      
+      resolve();
+    } catch(error) {
+      reject();
+    }
+  }).then(
+    () => {
+      setUpTemplatesSpinner.succeed();
+      setUpTemplates();
+    },
+    () => {
+      setUpTemplatesSpinner.fail();
+      process.exit(1);
+    }
+  );
+}
 
 function startTheSite() {
   var app = express();
