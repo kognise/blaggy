@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "node main.js",
-    "test": "mocha",
+    "test": "ava",
     "setup": "node config/setup.js"
   },
   "repository": {
@@ -41,5 +41,7 @@
     "synchronous-promise": "^2.0.5",
     "write": "^1.0.3"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "ava": "1.0.0-beta.8"
+  }
 }
