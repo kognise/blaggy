@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "node main.js",
-    "test": "mocha"
+    "test": "mocha",
+    "setup": "node config/setup.js"
   },
   "repository": {
     "type": "git",
@@ -28,7 +29,10 @@
   },
   "homepage": "https://github.com/arch-lord/blaggy#readme",
   "dependencies": {
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "file-exists": "^5.0.1",
+    "ora": "^3.0.0",
+    "prompts": "^1.0.0"
   },
   "devDependencies": {
     "supertest": "^3.1.0"
