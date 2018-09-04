@@ -1,3 +1,8 @@
 body {
-  background: $background1;
+  background:  $background1;
+  font-family: $mainFontStack;
+}
+
+.container {
+  margin-top: $barHeight;
 }

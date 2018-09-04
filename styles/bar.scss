@@ -1,0 +1,19 @@
+#bar {
+  position:   fixed;
+  top:        0;
+  left:       0;
+  width:      100%;
+  height:     $barHeight;
+  background: $background2;
+  
+  #name, #brand {
+    font-size:   $barFontSize;
+    font-family: $headerFontStack;
+  }
+  
+  #brand {
+    font-weight:  bold;
+    margin-right: 10px;
+    color:        $main;
+  }
+}
