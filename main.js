@@ -22,9 +22,9 @@ function setUpTemplates() {
   spin("Setting up templates", function() {
     format.extend(String.prototype, {});
     
-    var skeleton = read.sync("htm/skeleton.htm");
-    var head     = read.sync("htm/head.htm"    );
-    var bar      = read.sync("htm/bar.htm"     );
+    var skeleton = read.sync("htm/skeleton.htm").toString("utf8");
+    var head     = read.sync("htm/head.htm"    ).toString("utf8");
+    var bar      = read.sync("htm/bar.htm"     ).toString("utf8");
     
     var headWithName = head.format(config.normal.name);
     var barWithName  = head.format(config.normal.name);
