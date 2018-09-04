@@ -1,12 +1,8 @@
-const config = require("config.js");
-
 var format  = require("string-format");
 var sass    = require("node-sass")    ;
 var read    = require("read-file")    ;
 var express = require("express")      ;
 var ora     = require("ora")          ;
-
-var serverExport;
 
 var generatedCSS = "";
 var generateCSSSpinner = ora("Generating CSS");
@@ -70,8 +66,4 @@ function startTheSite() {
     var port = server.address().port;
     console.log("Listening at port %s.", port);
   });
-
-  serverExport = server;
 }
-
-module.exports = serverExport;
