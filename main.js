@@ -1,9 +1,10 @@
-var sass     = require("node-sass");
-var read     = require("read-file");
-var chokidar = require("chokidar") ;
-var express  = require("express")  ;
-var spin     = require("./spin")   ;
-var chalk    = require("chalk")    ;
+var templater = require("./templater");
+var sass      = require("node-sass")  ;
+var read      = require("read-file")  ;
+var chokidar  = require("chokidar")   ;
+var express   = require("express")    ;
+var spin      = require("./spin")     ;
+var chalk     = require("chalk")      ;
 
 try {
   var config = require("./config/config");
@@ -12,17 +13,14 @@ try {
   process.exit(1);
 }
 
-var skeletonWithStuff = "";
+var baseTemplate = "";
 function setUpTemplates(callback, argument) {
   spin("Setting up templates", function() {
     var skeleton = read.sync("htm/skeleton.htm").toString("utf8");
     var head     = read.sync("htm/head.htm"    ).toString("utf8");
     var bar      = read.sync("htm/bar.htm"     ).toString("utf8");
     
-    skeletonWithStuff = skeleton
-      .replace("{{ head }}", head)
-      .replace("{{ bar }}", bar)
-      .replace("{{ name }}", config.normal.name);
+    baseTemplate = templater(skeleton, ["head", "bar", "name"], [head, bar, config.normal.name]);
       
     return argument;
   }, callback);
@@ -39,10 +37,7 @@ function generateCSS(callback, argument) {
 var currentServer;
 
 function getHTML(content) {
-  var toReturn = skeletonWithStuff
-    .replace("{{ content }}", content)
-    .replace("{{ styles }}", generatedCSS);
-  return toReturn;
+  return templater(baseTemplate, ["content", "styles"], [content, generatedCSS]);
 }
 
 function startTheSite() {
