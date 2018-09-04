@@ -31,7 +31,7 @@ function generateCSS(callback, argument) {
   spin("Generating CSS", function() {
     generatedCSS = sass.renderSync({ file: "styles/main.scss" }).css.toString("utf8");
     return argument;
-  }, callback);
+  }, callback, true);
 }
 
 var currentServer;

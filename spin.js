@@ -1,24 +1,29 @@
 var chalk = require("chalk");
 var ora   = require("ora")  ;
 
-module.exports = function(text, run, callback) {
+module.exports = function(text, run, callback, recoverGracefully=false) {
   var spinner = ora(text);
   (new Promise(function(resolve, reject) {
     spinner.start();
     try {
-      resolve(run());
+      var value = run();
+      resolve(value);
     } catch(error) {
-      reject(error);
+      reject(error, value);
     }
   })).then(
     (argument) => {
       spinner.succeed();
       callback(argument);
     },
-    (error) => {
+    (error, argument) => {
       spinner.fail();
       console.log(chalk.red(error));
-      process.exit(1);
+      if (!recoverGracefully) {
+        process.exit(1);
+      } else {
+        callback(argument);
+      }
     }
   );
 }
