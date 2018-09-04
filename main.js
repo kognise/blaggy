@@ -27,21 +27,22 @@ function setUpTemplates() {
     var bar      = read.sync("htm/bar.htm"     ).toString("utf8");
     
     var headWithName = head.format(config.normal.name);
-    var barWithName  = head.format(config.normal.name);
+    var barWithName  = bar .format(config.normal.name);
     
     skeletonWithStuff = skeleton.format(headWithName, barWithName, "{}");
   }, startTheSite);
 }
 
 function getHTML(contents) {
-  return skeletonWithStuff.format(contents);
+  var toReturn = skeletonWithStuff.format(contents);
+  return toReturn;
 }
 
 function startTheSite() {
   var app = express();
 
   app.get("/", function (req, res) {
-    res.status(200).send("ok");
+    res.status(200).send(getHTML("ok"));
   });
 
   app.get("/stylesheet.css", function (req, res) {
