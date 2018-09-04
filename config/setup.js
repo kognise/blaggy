@@ -88,6 +88,8 @@ async function configDoesNotExist() {
   }).then(
     () => {
       writeFileSpinner.succeed();
+      console.log("Blaggy is ready!");
+      console.log("Just do `npm start` to start it.");
     },
     () => {
       writeFileSpinner.fail();

@@ -2,7 +2,15 @@ var format  = require("string-format");
 var sass    = require("node-sass")    ;
 var read    = require("read-file")    ;
 var express = require("express")      ;
+var chalk   = require("chalk")        ;
 var ora     = require("ora")          ;
+
+try {
+  var config = require("./config/config");
+} catch(error) {
+  console.log(chalk.red("Could not load config.js. Have you done `npm run setup` yet?"));
+  process.exit(1);
+}
 
 var generatedCSS = "";
 var generateCSSSpinner = ora("Generating CSS");
@@ -25,15 +33,22 @@ new Promise(function(resolve, reject) {
   }
 );
 
-var skeletonWithHead = "";
+var skeletonWithStuff = "";
 function setUpTemplates() {
   var setUpTemplatesSpinner = ora("Setting up templates");
   new Promise(function(resolve, reject) {
     setUpTemplatesSpinner.start();
     try {
+      format.extend(String.prototype, {});
+      
       var skeleton = read.sync("htm/skeleton.htm");
-      var head     = read.sync("htm/skeleton.htm");
-      var headWithName
+      var head     = read.sync("htm/head.htm"    );
+      var bar      = read.sync("htm/bar.htm"     );
+      
+      var headWithName = head.format(config.normal.name);
+      var barWithName  = head.format(config.normal.name);
+      
+      skeletonWithStuff = skeleton.format(headWithName, barWithName, "{}");
       
       resolve();
     } catch(error) {
@@ -49,6 +64,10 @@ function setUpTemplates() {
       process.exit(1);
     }
   );
+}
+
+function getHTML(contents) {
+  return skeletonWithStuff.format(contents);
 }
 
 function startTheSite() {
