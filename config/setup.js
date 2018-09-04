@@ -1,10 +1,10 @@
-var ora = require("ora");
-var prompts = require("prompts");
+var ora        = require("ora")        ;
+var prompts    = require("prompts")    ;
 var fileExists = require("file-exists");
-var writeFile = require("write");
+var writeFile  = require("write")      ;
 
 var checkExistsSpinner = ora("Checking if config.js already exists");
-var checkExistsPromise = new Promise(function(resolve, reject) {
+new Promise(function(resolve, reject) {
   checkExistsSpinner.start();
   if (!fileExists.sync("config/config.js")) {
     resolve(false);
@@ -74,9 +74,11 @@ async function configDoesNotExist() {
   }
   
   var writeFileSpinner = ora("Writing config file");
-  var writeFilePromise = new Promise(function(resolve, reject) {
+  new Promise(function(resolve, reject) {
     writeFileSpinner.start();
-    writeFile("config/config.js", "var normal = " + JSON.stringify(normalResponse) + "\nvar disqus = " + JSON.stringify(disqusResponse) + ";", (error) => {
+    writeFile("config/config.js", "var normal = "
+    + JSON.stringify(normalResponse) + ";\nvar disqus = " + JSON.stringify(disqusResponse)
+    + ";\nmodule.exports = {\"normal\":normal,\"disqus\":disqus};", (error) => {
       if (error) {
         reject();
       } else {
