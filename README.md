@@ -1,5 +1,6 @@
 <p align="center">
   <img src="https://github.com/arch-lord/blaggy/blob/master/art/banner.png"/>
+  <br />
   <a href="https://circleci.com/gh/arch-lord/blaggy"><img src="https://img.shields.io/circleci/project/github/arch-lord/blaggy/master.svg?style=for-the-badge" /></a>
   &nbsp;
   <a href="https://depfu.com/repos/arch-lord/blaggy"><img src="https://img.shields.io/depfu/arch-lord/blaggy.svg?style=for-the-badge" /></a>
