@@ -6,7 +6,12 @@
   <body>
     {{ bar }}
     <div class="container">
-      {{ content }}
+      <div class="inner-container content">
+        {{ content }}
+      </div>
+      <div class="inner-container comments {{enable-comments}}">
+        {{ comments }}
+      </div>
     </div>
   </body>
 </html>
