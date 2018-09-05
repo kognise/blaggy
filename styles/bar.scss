@@ -1,19 +1,24 @@
 #bar {
-  position:   fixed;
-  top:        0;
-  left:       0;
-  width:      100%;
-  height:     $barHeight;
-  background: $background2;
-  
+  position:    fixed;
+  top:         0;
+  left:        0;
+  width:       100%;
+  height:      $barHeight;
+  line-height: $barHeight;
+  background:  $background2;
+  overflow:    hidden;
+  padding:     0 $barPadding;
+
   #name, #brand {
     font-size:   $barFontSize;
     font-family: $headerFontStack;
   }
-  
+
   #brand {
     font-weight:  bold;
     margin-right: 10px;
     color:        $main;
+    cursor:       default;
+    user-select:  none;
   }
 }

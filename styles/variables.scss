@@ -12,6 +12,6 @@ $mainFontStack:   "Roboto", "Arial", "Helvetica Neue", "Helvetica", sans-serif;
 $headerFontStack: "Roboto Slab", "Rockwell", "Courier", "Georgia", "Times", "Times New Roman", serif;
 
 // Bar
-$barPadding:    17px;
+$barPadding:    30px;
 $barFontSize:   2em;
-$barHeight:     60px;
+$barHeight:     calc(#{$barPadding} * 2 + #{$barFontSize});
