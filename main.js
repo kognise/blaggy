@@ -1,81 +1,67 @@
-var templater = require("./templater");
-var sass      = require("node-sass")  ;
-var read      = require("read-file")  ;
-var chokidar  = require("chokidar")   ;
-var express   = require("express")    ;
-var spin      = require("./spin")     ;
-var chalk     = require("chalk")      ;
+var reload    = require("require-reload")(require);
+var chokidar  = require("chokidar");
+var express   = require("express") ;
+var chalk     = require("chalk")   ;
+
+var server = reload("./server");
+var app    = express();
 
 // Import config, or if it fails display an error.
-try {
-  var config = require("./config/config");
-} catch(error) {
-  console.log(chalk.red("Could not load config.js. Have you done `npm run setup` yet?"));
-  process.exit(1);
-}
-
-// Does the initial setup of templates
-var baseTemplate = "";
-function setUpTemplates(callback, argument) {
-  spin("Setting up templates", function() {
-    var skeleton = read.sync("htm/skeleton.htm").toString("utf8");
-    var head     = read.sync("htm/head.htm"    ).toString("utf8");
-    var bar      = read.sync("htm/bar.htm"     ).toString("utf8");
-    var comments = read.sync("htm/comments.htm").toString("utf8");
-
-    baseTemplate = templater(skeleton, ["head", "bar", "comments", "name", ], [head, bar, comments, config.normal.name]);
-
-    return argument;
-  }, callback);
-}
-
-// Puts the content and CSS into a working HTML page
-function getHTML(content) {
-  return templater(baseTemplate, ["content", "styles"], [content, generatedCSS]);
-}
-
-// Generates CSS from SCSS files.
-var generatedCSS = "";
-function generateCSS(callback, argument) {
-  spin("Generating CSS", function() {
-    generatedCSS = sass.renderSync({ file: "styles/main.scss" }).css.toString("utf8");
-    return argument;
-  }, callback, true);
+function loadConfig() {
+  try {
+    var config = require("./config/config");
+  } catch(error) {
+    console.log(chalk.red("Could not load config.js. Have you done `npm run setup` yet?"));
+    process.exit(1);
+  }
+  return config;
 }
 
 // Starts server and watchers
 function startTheSite() {
-  var app = express();
-  defineRoutes(app);
-  startServer(app);
+  server.defineRoutes(app);
+  server.startServer(app);
+}
+
+// Set up Chokidar watchers
+function startWatchers(config) {
   chokidar.watch("styles", {ignoreInitial: true}).on("all", (event, path) => {
-    console.log("SCSS change detected.");
-    generateCSS(() => {});
+    console.log(chalk.bold("SCSS change detected."));
+    server.generateCSS(() => {});
   });
   chokidar.watch("htm", {ignoreInitial: true}).on("all", (event, path) => {
-    console.log("Template change detected.");
-    setUpTemplates(() => {});
+    console.log(chalk.bold("Template change detected."));
+    server.setUpTemplates(() => {});
+  });
+  chokidar.watch("server.js", {ignoreInitial: true}).on("all", (event, path) => {
+    console.log(chalk.bold("Server script change detected."));
+    startChain(config);
   });
 }
 
-// Listens on port 3000
-async function startServer(app) {
-  var server = app.listen(3000, function () {
-    var port = server.address().port;
-    console.log(chalk.green("Listening at port %s."), port);
-  });
-  currentServer = server
+// Start the chain of functions that lead to starting the site
+function startChain(config) {
+  var oldServer = server;
+  try {
+    server = reload("./server");
+    var success = true;
+  } catch(error) {
+    console.log(chalk.red("Error in server.js: %s"), error.message);
+    console.log(chalk.red("The current instance will be kept."))
+    var success = false;
+  }
+  if (success) {
+    oldServer.stopServer();
+    server.setUpTemplates(server.generateCSS, startTheSite, config);
+  }
 }
 
-// Sets up the correct routes.
-function defineRoutes(app) {
-  app.get("/", function (req, res) {
-    res.status(200).send(getHTML("Ok."));
-  });
-  app.get("/test", function(req, res) {
-    res.status(200).send(getHTML(read.sync("htm/test.htm")));
-  })
+// Start everything
+function start() {
+  var config = loadConfig();
+  startChain(config);
+  startWatchers(config);
 }
 
-// Starts the chain.
-setUpTemplates(generateCSS, startTheSite);
+// GO!!!!
+start();
