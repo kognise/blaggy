@@ -11,7 +11,10 @@ $text2:       rgb(77,  77,  77 );
 $mainFontStack:   "Roboto", "Arial", "Helvetica Neue", "Helvetica", sans-serif;
 $headerFontStack: "Roboto Slab", "Georgia", "Times", "Times New Roman", serif;
 
+// Containers
+$topPadding:  30px;
+$sidePadding: 200px;
+
 // Bar
-$barPadding:    30px;
-$barFontSize:   2em;
-$barHeight:     calc(#{$barPadding} * 2 + #{$barFontSize});
+$barFontSize: 2em;
+$barHeight:   calc(#{$topPadding} * 2 + #{$barFontSize});

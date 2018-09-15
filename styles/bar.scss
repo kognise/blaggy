@@ -1,13 +1,12 @@
 #bar {
   position:    fixed;
   top:         0;
-  left:        0;
   width:       100%;
   height:      $barHeight;
   line-height: $barHeight;
   background:  $background2;
   overflow:    hidden;
-  padding:     0 $barPadding;
+  padding:     0 $sidePadding;
 
   #name, #brand {
     font-size:   $barFontSize;
