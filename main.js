@@ -6,17 +6,6 @@ var chalk     = require("chalk")   ;
 var server = reload("./server");
 var app    = express();
 
-// Import config, or if it fails display an error.
-function loadConfig() {
-  try {
-    var config = require("./config/config");
-  } catch(error) {
-    console.log(chalk.red("Could not load config.js. Have you done `npm run setup` yet?"));
-    process.exit(1);
-  }
-  return config;
-}
-
 // Starts server and watchers
 function startTheSite() {
   server.defineRoutes(app);
@@ -24,7 +13,7 @@ function startTheSite() {
 }
 
 // Set up Chokidar watchers
-function startWatchers(config) {
+function startWatchers() {
   chokidar.watch("styles", {ignoreInitial: true}).on("all", (event, path) => {
     console.log(chalk.bold("SCSS change detected."));
     server.generateCSS(() => {});
@@ -35,12 +24,12 @@ function startWatchers(config) {
   });
   chokidar.watch("server.js", {ignoreInitial: true}).on("all", (event, path) => {
     console.log(chalk.bold("Server script change detected."));
-    startChain(config);
+    startChain();
   });
 }
 
 // Start the chain of functions that lead to starting the site
-function startChain(config) {
+function startChain() {
   var oldServer = server;
   try {
     server = reload("./server");
@@ -52,15 +41,14 @@ function startChain(config) {
   }
   if (success) {
     oldServer.stopServer();
-    server.setUpTemplates(server.generateCSS, startTheSite, config);
+    server.setUpTemplates(server.generateCSS, startTheSite);
   }
 }
 
 // Start everything
 function start() {
-  var config = loadConfig();
-  startChain(config);
-  startWatchers(config);
+  startChain();
+  startWatchers();
 }
 
 // GO!!!!

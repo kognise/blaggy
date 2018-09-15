@@ -14,15 +14,17 @@ exports.setUpTemplates = function setUpTemplates(callback, argument, config) {
     var bar      = read.sync("htm/bar.htm"     ).toString("utf8");
     var comments = read.sync("htm/comments.htm").toString("utf8");
 
+    var config = loadConfig();
     baseTemplate = templater(skeleton, ["head", "bar", "comments", "name", ], [head, bar, comments, config.normal.name]);
 
     return argument;
   }, callback);
-}
+};
 
 // Puts the content and CSS into a working HTML page
-getHTML = function getHTML(content, article=false, config) {
-  var enableComments = article && config.disqus != undefined;
+function getHTML(content, article=false) {
+  var config = loadConfig();
+  var enableComments = article && (config.disqus != undefined);
   return templater(baseTemplate, ["content", "enable-comments", "styles"], [content, enableComments, generatedCSS]);
 }
 
@@ -50,14 +52,24 @@ exports.stopServer = function stopServer(app) {
     console.log(chalk.green("Server stopped successfully."));
     currentServer.close();
   }
-}
+};
 
 // Sets up the correct routes.
 exports.defineRoutes = function defineRoutes(app) {
   app.get("/", function (req, res) {
-    res.status(200).send(getHTML("Ok."));
+    res.status(200).send(getHTML("Ok.", true));
   });
   app.get("/test", function(req, res) {
-    res.status(200).send(getHTML(read.sync("htm/test.htm")));
-  })
-}
+    res.status(200).send(getHTML(read.sync("htm/test.htm"), true));
+  });
+};
+
+// Import config, or if it fails display an error.
+function loadConfig() {
+  try {
+    return require("./config/config");
+  } catch(error) {
+    console.log(chalk.red("Could not load config.js. Have you done `npm run setup` yet?"));
+    process.exit(1);
+  }
+};
