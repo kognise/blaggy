@@ -1,7 +1,7 @@
 .container {
   .inner-container {
     background: $background2;
-    margin-top: calc(#{$barHeight} + 50px);
+    margin-top: 50px;
     padding:    $topPadding $sidePadding;
   }
 }
