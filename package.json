@@ -35,7 +35,7 @@
     "file-exists": "^5.0.1",
     "node-sass": "^4.9.3",
     "ora": "^3.0.0",
-    "prompts": "^1.0.0",
+    "prompts": "^1.1.1",
     "read-file": "^0.2.0",
     "rimraf": "^2.6.2",
     "synchronous-promise": "^2.0.5",
