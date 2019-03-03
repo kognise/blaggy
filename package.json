@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/arch-lord/blaggy.git"
+    "url": "git+https://github.com/kognise/blaggy.git"
   },
   "keywords": [
     "blog",
@@ -25,9 +25,9 @@
   "author": "Felix Mattick",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/arch-lord/blaggy/issues"
+    "url": "https://github.com/kognise/blaggy/issues"
   },
-  "homepage": "https://github.com/arch-lord/blaggy#readme",
+  "homepage": "https://github.com/kognise/blaggy#readme",
   "dependencies": {
     "chalk": "^2.0.0",
     "chokidar": "^2.0.4",
