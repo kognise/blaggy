@@ -22,7 +22,7 @@
     "express",
     "expressjs"
   ],
-  "author": "Felix Mattick",
+  "author": "Kognise",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/kognise/blaggy/issues"
