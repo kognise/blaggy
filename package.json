@@ -39,7 +39,7 @@
     "read-file": "^0.2.0",
     "rimraf": "^2.6.2",
     "synchronous-promise": "^2.0.5",
-    "write": "^1.0.3"
+    "write": "^2.0.0"
   },
   "devDependencies": {}
 }
