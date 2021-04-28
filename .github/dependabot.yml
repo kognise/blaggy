@@ -1,0 +1,18 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "11:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: ora
+    versions:
+    - 5.3.0
+  - dependency-name: prompts
+    versions:
+    - 2.4.0
+  - dependency-name: chalk
+    versions:
+    - 4.1.0
