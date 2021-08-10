@@ -1,3 +1,7 @@
+> 🚩 **This project is archived!** 🚩
+> 
+> *This was my first real Node.js project when I was 12. However, I didn't really have enough experience to keep developing it so it's only kept online for the legacy.*
+
 <p align="center">
   <img src="https://github.com/kognise/blaggy/blob/master/art/banner.png"/>
 </p>
